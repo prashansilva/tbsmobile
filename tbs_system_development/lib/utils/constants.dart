@@ -10,8 +10,9 @@ const orangeThemeColor = 0xffe96733;
 const lightOrange = 0xfffa9263;
 const paleOrange = 0xffffe9de;
 const blueThemeColor = 0xff246e95;
-const appThemeColor = 0xff246e95;
-const buttonThemeColor = 0xff246e95;
+const appThemeColor = 0xFF00ACC1;
+const appThemeColor2 = 0xff246e95;
+const buttonThemeColor = 0xFF00ACC1;
 
 // Primary borderRadius
 const borderRadius = 10.0;

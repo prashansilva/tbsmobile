@@ -4,6 +4,7 @@ import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'package:tbssystemdevelopment/locator.dart';
 import 'package:tbssystemdevelopment/models/dashboard_model.dart';
 import 'package:tbssystemdevelopment/models/user_model.dart';
+import 'package:tbssystemdevelopment/providers/dashboard_fliter_state.dart';
 import 'package:tbssystemdevelopment/providers/dashboard_state.dart';
 import 'package:tbssystemdevelopment/providers/document_state.dart';
 import 'package:tbssystemdevelopment/providers/user_state.dart';
@@ -11,10 +12,14 @@ import 'package:tbssystemdevelopment/screens/user_screens/user_login_screen.dart
 import 'package:tbssystemdevelopment/services/local_storage.dart';
 import 'package:tbssystemdevelopment/utils/colors.dart';
 import 'package:tbssystemdevelopment/utils/constants.dart';
+import 'package:tbssystemdevelopment/widgets/coordinator_card_widget.dart';
 import 'package:tbssystemdevelopment/widgets/custom_text_widget.dart';
+import 'package:tbssystemdevelopment/widgets/custom_widget_card.dart';
 import 'package:tbssystemdevelopment/widgets/home_report_widget.dart';
 import 'package:tbssystemdevelopment/widgets/home_tile_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:tbssystemdevelopment/widgets/line_leader_card.dart';
+import 'package:tbssystemdevelopment/widgets/my_personal_card.dart';
 
 //class HomeScreen extends StatelessWidget {
 //  @override
@@ -102,9 +107,11 @@ class _HomeScreenState extends State<HomeScreen> {
   var _isLoading = false;
   DashboardData dashboard = new DashboardData(
       totalCount: 0,
-      todayCount: 0,
+      todayCount: 0, myPersonal: 0,
       leadersCount: 0,
       coordinatorsCount: 0,
+      leadersSubCount: 0,
+      coordinatorsSubCount: 0,
       documents: []);
 
   @override
@@ -145,6 +152,8 @@ class _HomeScreenState extends State<HomeScreen> {
     var width = MediaQuery.of(context).size.width;
     var height = MediaQuery.of(context).size.height;
     final dashboardState = Provider.of<DashboardState>(context);
+    final documentState = Provider.of<DocumentState>(context);
+    final dashboardFilter = Provider.of<DashboardFilterState>(context);
     return Scaffold(
         body: SafeArea(
       child: Column(
@@ -157,18 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   blurRadius: 50,
                   color: Colors.white.withOpacity(0.23),
                 )
-              ]),
-//            decoration: BoxDecoration(
-//                color: Colors.white,
-//                borderRadius: BorderRadius.only(
-//                    bottomLeft: Radius.circular(20.0),
-//                    bottomRight: Radius.circular(20.0)),
-//                boxShadow: [
-//                  BoxShadow(
-//                      offset: Offset(0, 4),
-//                      blurRadius: 5,
-//                      color: Colors.black.withOpacity(0.23))
-//                ]),
+              ]),//
             child: _isLoading
                 ? Container()
                 : Stack(
@@ -187,12 +185,11 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
-                              'Today ${DateFormat.yMMMd().format(DateTime.now())}',
+                              'TBS Mining',
                               textAlign: TextAlign.center,
                               style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12 * width * 0.003,
+                                color: Colors.white,
+                                fontSize: 16 * width * 0.003,
                               ),
                             ),
                           ),
@@ -224,12 +221,50 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Container(
                       height: height*0.15,
                       width: width*0.9,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      child: Row(
                         children: [
-                          CustomTextWidget(text: 'Welcome ${userData.first_name} !', factor: 2.0,),
-                          CustomTextWidget(text: '${renderRoleName(userData.role_code)}', factor: 1.0),
-                          CustomTextWidget(text: '${userData.code}', factor: 1.0),
+                          Container(
+                            height: height*0.15,
+                            width: width*0.2,
+                            child: Padding(
+                              padding: EdgeInsets.all(width*0.05),
+                              child: Center(child: Image.asset(
+                                "assets/images/contact.png",
+                                fit: BoxFit.cover,
+                              )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  CustomTextWidget(text: 'Welcome', factor: 1.5,),
+                                  SizedBox(
+                                    height: height*0.01
+                                  ),
+                                  Text('${userData.first_name} ${userData.last_name}', style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14 * width * 0.003,
+                                  ),),
+                                  SizedBox(
+                                      height: height*0.01
+                                  ),
+                                  Container(
+                                    width: width*0.65,
+                                    child: Row(
+                                      children: [
+                                        Spacer(),
+                                        CustomTextWidget(text: '${userData.code}  |  ${renderRoleName(userData.role_code)}', factor: 1.0),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
                       decoration: BoxDecoration(
@@ -270,49 +305,105 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SingleChildScrollView(
                       child: Column(
                         children: [
-                          Container(
-                            decoration: BoxDecoration(),
-                            child: Padding(
-                                padding: EdgeInsets.all(width * 0.05),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      child: Row(
-                                        children: renderReport(width*0.42, width*0.42, userData.role_code),
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      ),
-                                    ),
-                                    SizedBox(height: width*0.03,),
-                                    Container(
-                                      child: Row(
-                                        children: renderReportTiles(width*0.42, width*0.42, userData.role_code),
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                      ),
-                                    ),
-                                    Container(
-                                      child: Row(
-                                        children: [],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
                             child: Container(
-                              height: height * 0.4,
-                              decoration: BoxDecoration(),
-                              child: Padding(
-                                  padding: EdgeInsets.all(width * 0.05),
-                                  child: GridView.count(
-                                      primary: false,
-                                      childAspectRatio: (1 / 0.5),
-                                      crossAxisSpacing: width * 0.05,
-                                      mainAxisSpacing: width * 0.05,
-                                      crossAxisCount: 1,
-                                      children: renderDocumentTypes(height * 0.4))),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: height*0.15,
+                                    width: width*0.2,
+                                    child: Center(child: Image.asset(
+                                      "assets/images/discussion.png",
+                                      fit: BoxFit.cover,
+                                    )),
+                                  ),
+                                  Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text('DISSCUSION FORM'),
+                                      Container(
+                                        height: height*0.005,
+                                        color: themeColor,
+                                        width: width*0.7,
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
+                          Padding(
+                            padding: const EdgeInsets.only(left: 20, right: 20),
+                            child: Container(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  GestureDetector(onTap: () {
+                                    dashboardFilter.resetDataTotal();
+                                    dashboardFilter.getDiscussionDocumentList();
+                                    Navigator.of(context).pushNamed('/documentFilterScreen');
+                                  }, child: CustomDashboardWidget(heading: 'Total Submission', count: dashboard.totalCount, height: height*0.17, width: width*0.42,)),
+                                  GestureDetector(onTap: () {
+                                    dashboardFilter.resetDataDaily();
+                                    dashboardFilter.getDiscussionDocumentList();
+                                    Navigator.of(context).pushNamed('/documentFilterScreen');
+                                  } ,child: CustomDashboardWidget(heading: 'Daily Submission', count: dashboard.todayCount, height: height*0.17, width: width*0.42,))
+                                ],
+                              ),
+                            ),
+                          ),
+
+                          Padding(
+                            padding: const EdgeInsets.all(20),
+                            child: Column(
+                              children: renderMainTiles(userData.role_code, dashboard, height, width, documentState, dashboardState),
+                            ),
+                          ),
+
+//                          Container(
+//                            decoration: BoxDecoration(),
+//                            child: Padding(
+//                                padding: EdgeInsets.all(width * 0.05),
+//                                child: Column(
+//                                  children: [
+//                                    Container(
+//                                      child: Row(
+//                                        children: renderReport(width*0.42, width*0.42, userData.role_code),
+//                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                      ),
+//                                    ),
+//                                    SizedBox(height: width*0.03,),
+//                                    Container(
+//                                      child: Row(
+//                                        children: renderReportTiles(width*0.42, width*0.42, userData.role_code),
+//                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                                      ),
+//                                    ),
+//                                    Container(
+//                                      child: Row(
+//                                        children: [],
+//                                      ),
+//                                    )
+//                                  ],
+//                                )),
+//                          ),
+//                          Container(
+//                            decoration: BoxDecoration(),
+//                            child: Container(
+//                              height: height * 0.4,
+//                              decoration: BoxDecoration(),
+//                              child: Padding(
+//                                  padding: EdgeInsets.all(width * 0.05),
+//                                  child: GridView.count(
+//                                      primary: false,
+//                                      childAspectRatio: (1 / 0.5),
+//                                      crossAxisSpacing: width * 0.05,
+//                                      mainAxisSpacing: width * 0.05,
+//                                      crossAxisCount: 1,
+//                                      children: renderDocumentTypes(height * 0.4))),
+//                            ),
+//                          ),
                         ],
                       ),
                     ),
@@ -348,6 +439,29 @@ class _HomeScreenState extends State<HomeScreen> {
       default:
         return 'Coordinator';
     }
+  }
+
+  List<Widget> renderMainTiles (String role_code, DashboardData dashboard, double height, double width, DocumentState documentState, DashboardState dashboardState) {
+    List<Widget> reportTileList = [];
+    Widget personal = GestureDetector( child: MyPersonalCard(count: dashboard.myPersonal, height: height*0.17, width: width*0.9,), onTap: () {
+      documentState.resetData('',false);
+      documentState.getMyPersonal();
+      Navigator.of(context).pushNamed('/myPersonal');
+    },);
+    Widget sizeBox = SizedBox(height: height*0.025);
+    reportTileList.add(personal);
+    if(role_code == "1" ) {
+      Widget leaders =LineLeaderCardWidget(headCount: dashboard.leadersCount, count: dashboard.leadersSubCount, height: height*0.17, width: width*0.9,);
+      reportTileList.add(sizeBox);
+      reportTileList.add(leaders);
+    }
+    if(role_code == "2") {
+      Widget coordinators =  CoordinatorCardWidget(headCount: dashboard.coordinatorsCount, count: dashboard.coordinatorsSubCount, height: height*0.17, width: width*0.9,);
+      reportTileList.add(sizeBox);
+      reportTileList.add(coordinators);
+    }
+
+     return reportTileList;
   }
 
   List<Widget> renderReport(double height, double width, String role) {

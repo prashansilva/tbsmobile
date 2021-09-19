@@ -24,8 +24,6 @@ class ManageUserWidget extends StatelessWidget {
     return GestureDetector(
       onTap: () => {tapAction(context, documentState, dashboardState, user.role_code, user.id)},
       child: Container(
-        height: height*0.15,
-        width: width,
         decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(20),
@@ -33,72 +31,150 @@ class ManageUserWidget extends StatelessWidget {
               BoxShadow(
                   offset: Offset(0, 4),
                   blurRadius: 5,
-                  color: Colors.black
-                      .withOpacity(0.23))
+                  color: Colors.black.withOpacity(0.23))
             ]),
+        height: height*0.15,
+        width: width,
         child: Row(
           children: [
             Container(
-                width: width*0.55,
-                child: Padding(
-                  padding: EdgeInsets.all(height*0.01),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      CustomTextWidget(text: 'Code : ${user.code}', factor: 1.0,),
-                      CustomTextWidget(text: 'Name : ${user.first_name} ${user.last_name}',factor: 1.0),
-                      CustomTextWidget(text: 'Location : ${user.location}',factor: 1.0),
-                      CustomTextWidget(text: 'Contact : ${user.mobile_number}',factor: 1.0),
-                    ],
-                  ),
-                )),
-            Spacer(),
-            Container(
-              width: width*0.2,
+              width: width * 0.02,
+              height: height * 0.1,
               decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: Colors.grey,
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
                         offset: Offset(0, 4),
                         blurRadius: 5,
-                        color: Colors.black
-                            .withOpacity(0.23))
+                        color: Colors.black.withOpacity(0.23))
                   ]),
-              child: Padding(
-                padding: EdgeInsets.all(height*0.02),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomTextWidget(text: 'Total',factor: 0.8),
-                    SizedBox(height: height*0.02,),
-                    CustomTextWidget(text: '${user.totalCount}',factor: 2.0),
-                  ],
-                ),
+            ),
+            Container(
+              width: width * 0.2,
+              height: height * 0.15,
+              child:  Padding(
+                padding: EdgeInsets.all(width*0.05),
+                child: Center(child: Image.asset(
+                  "assets/images/contact.png",
+                  fit: BoxFit.cover,
+                )),
               ),
             ),
             Container(
-              width: width*0.2,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(topRight: Radius.circular(20), bottomRight: Radius.circular(20)),
-                  color: Colors.white,
-                  boxShadow: [
-                    BoxShadow(
-                        offset: Offset(0, 4),
-                        blurRadius: 5,
-                        color: Colors.black
-                            .withOpacity(0.23))
-                  ]),
-              child: Padding(
-                padding: EdgeInsets.all(height*0.02),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    CustomTextWidget(text: 'Daily',factor: 0.8),
-                    SizedBox(height: height*0.02,),
-                    CustomTextWidget(text: '${user.todayCount}',factor: 2.0),
-                  ],
-                ),
+              height: height * 0.15,
+              width: width * 0.65,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextWidget(
+                    text: '${user.first_name} ${user.last_name}',
+                    factor: 1.2,
+                  ),
+                  SizedBox(height: height * 0.01),
+                  Container(
+                    width: width * 0.9,
+                    height: height * 0.1,
+                    child: Row(
+                      mainAxisAlignment: user.role_code == '2' ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+                      children: [
+                        user.role_code == '2' ? Container(
+                          width: width * 0.25,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CustomTextWidget(
+                                text: 'Head Count',
+                                factor: 0.8,
+                              ),
+                              Text(
+                                '${user.coordinatorsCount}',
+                                style: TextStyle(
+                                  color: themeColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 2 * width * 0.03,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ) : Container(
+                          width: width * 0.25,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CustomTextWidget(
+                                text: 'Today',
+                                factor: 0.8,
+                              ),
+                              Text(
+                                '${user.todayCount}',
+                                style: TextStyle(
+                                  color: themeColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 2 * width * 0.03,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          width: width * 0.01,
+                          height: height * 0.5,
+                          decoration: BoxDecoration(
+                              color: Colors.black,
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(0, 4),
+                                    blurRadius: 5,
+                                    color: Colors.black.withOpacity(0.23))
+                              ]),
+                        ),
+                        Container(
+                          width: width * 0.38,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              CustomTextWidget(
+                                text: 'Submission Count',
+                                factor: 0.8,
+                              ),
+                              Text(
+                                '${user.totalCount}',
+                                style: TextStyle(
+                                  color: themeColor,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 2 * width * 0.03,
+                                ),
+                              ),
+                              user.role_code == '2' ? Row(
+                                children: [
+                                  Spacer(),
+                                  Text('Today', style: TextStyle(
+                                    color: Colors.grey,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 1 * width * 0.03,
+                                  )),
+                                  SizedBox(width: width * 0.05,),
+                                  Text(
+                                    '${user.todayCount}',
+                                    style: TextStyle(
+                                      color: themeColor,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 1.5 * width * 0.03,
+                                    ),
+                                  ),
+
+                                ],
+                              ) : Container()
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ],
               ),
             )
           ],
@@ -111,7 +187,7 @@ class ManageUserWidget extends StatelessWidget {
     switch (roleCode) {
       case '2':
         dashboardState.resetCoordinators();
-        dashboardState.getCoordinatorsList(userId);
+        dashboardState.getCoordinatorsListByManager(userId);
         Navigator.of(context).pushNamed('/coordinatorList');
         break;
       default:

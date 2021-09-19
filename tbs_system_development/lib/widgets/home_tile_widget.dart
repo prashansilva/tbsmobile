@@ -176,7 +176,7 @@ class HomeTileWidget extends StatelessWidget {
               if (value != null) {managerCode = value.id}
             });
         dashboardState.resetLeaders();
-        dashboardState.getLeadersList(managerCode);
+        dashboardState.getLeadersList();
         Navigator.of(context).pushNamed('/userList');
         break;
       case '2':
@@ -184,7 +184,7 @@ class HomeTileWidget extends StatelessWidget {
               if (value != null) {leaderCode = value.id}
             });
         dashboardState.resetCoordinators();
-        dashboardState.getCoordinatorsList(leaderCode);
+        dashboardState.getCoordinatorsList();
         Navigator.of(context).pushNamed('/coordinatorList');
         break;
       default:

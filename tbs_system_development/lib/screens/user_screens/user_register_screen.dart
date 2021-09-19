@@ -50,7 +50,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
             children: [
               Container(
                 width: width,
-                height: height * 0.3,
+                height: height * 0.4,
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(20),
@@ -64,12 +64,12 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                 child: Column(
                   children: [
                     SizedBox(
-                      height: height * 0.3,
+                      height: height * 0.4,
                       child: ClipRRect(
                         borderRadius: BorderRadius.only(bottomRight: Radius.circular(10.0), bottomLeft: Radius.circular(10.0)),
                         child: Image.asset(
-                          "assets/images/login_image.jpg",
-                          fit: BoxFit.fill,
+                          "assets/images/register.png",
+                          fit: BoxFit.fitHeight,
                         ),
                       ),
                     ),
@@ -126,7 +126,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                                   ),
                                   errorStyle: TextStyle(height: 0),
                                   prefixIcon: Icon(
-                                      Icons.account_circle,
+                                      Icons.verified_user,
                                       color: Colors.black)),
                             ),
                           ),
@@ -342,7 +342,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                                     ),
                                   ),
                                   prefixIcon: Icon(
-                                      Icons.account_circle,
+                                      Icons.phone,
                                       color: Colors.black)),
                             ),
                           ),
@@ -392,7 +392,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                                     ),
                                   ),
                                   prefixIcon: Icon(
-                                      Icons.account_circle,
+                                      Icons.location_on,
                                       color: Colors.black)),
                             ),
                           ),
@@ -442,7 +442,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                                     ),
                                   ),
                                   prefixIcon: Icon(
-                                      Icons.account_circle,
+                                      Icons.supervised_user_circle,
                                       color: Colors.black)),
                             ),
                           ),
@@ -492,7 +492,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                                     ),
                                   ),
                                   prefixIcon: Icon(
-                                      Icons.account_circle,
+                                      Icons.supervised_user_circle,
                                       color: Colors.black)),
                             ),
                           ),
@@ -536,8 +536,7 @@ class _UserRegsiterScreenState extends State<UserRegsiterScreen> {
                     Text('You already have an account? '),
                     TextButton(
                         onPressed: () {
-                          Navigator.of(context)
-                              .pushNamed('/loginPage');
+                          Navigator.of(context).pop();
                         },
                         child: Text(
                           'SignIn here',

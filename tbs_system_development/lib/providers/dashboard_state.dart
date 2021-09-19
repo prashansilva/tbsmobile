@@ -21,12 +21,21 @@ class DashboardState extends ChangeNotifier {
   List<UserData> coordinatorListByManager = [];
   ApiManager _apiManager = locator<ApiManager>();
   LocalStorage localStorage = locator<LocalStorage>();
+  int lineLeadersCountByManager = 0;
+  int lineLeadersTotalSubmissionByManager = 0;
+  int coordinatorCountByLeader = 0;
+  int coordinatorsTotalSubmissionByLeader = 0;
 
   void resetLeaders() {
+    this.lineLeadersCountByManager = 0;
+    this.lineLeadersTotalSubmissionByManager = 0;
     this.leadersList = [];
+    notifyListeners();
   }
 
   void resetCoordinators() {
+    this.coordinatorCountByLeader = 0;
+    this.coordinatorsTotalSubmissionByLeader = 0;
     this.coordinatorList = [];
   }
 
@@ -75,69 +84,123 @@ class DashboardState extends ChangeNotifier {
       } catch (err) {
         print(err);
         DashboardData responseData =
-        new DashboardData(totalCount: 0, todayCount: 0, leadersCount: 0, coordinatorsCount: 0, documents: []);
+        new DashboardData(totalCount: 0, todayCount: 0, myPersonal: 0, leadersCount: 0, coordinatorsCount: 0, leadersSubCount: 0, coordinatorsSubCount: 0, documents: []);
         return responseData;
       }
     }
     else {
       DashboardData responseData =
-      new DashboardData(totalCount: 0, todayCount: 0, leadersCount: 0, coordinatorsCount: 0, documents: []);
+      new DashboardData(totalCount: 0, todayCount: 0, myPersonal: 0, leadersCount: 0, coordinatorsCount: 0, leadersSubCount: 0, coordinatorsSubCount: 0, documents: []);
       return responseData;
     }
   }
 
-  Future<List<DashboardMemberData>> getLeadersList(String id) async {
-    var dataMapper = toMapGetMembers(id);
-    var body = utf8.encode(jsonEncode(dataMapper));
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': '*/*',
-    };
+  Future<List<DashboardMemberData>> getLeadersList() async {
+    var loggedUser = await localStorage.getUserData();
+    if(loggedUser != null) {
+      var dataMapper = toMapGetMembers(loggedUser.id);
+      var body = utf8.encode(jsonEncode(dataMapper));
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': '*/*',
+      };
 
-    try {
-      print(body);
-      this.loading = true;
-      final response =
-      await _apiManager.post(url + 'manager', body, requestHeaders);
-      notifyListeners();
-      if (response["data"] != null) {
-        var list = (response['data']) as List;
-        this.leadersList = list.map((data) => DashboardMemberData.fromJson(data)).toList();
+      try {
+        print(body);
+        this.loading = true;
+        final response =
+        await _apiManager.post(url + 'manager', body, requestHeaders);
+        if (response["data"] != null) {
+          var list = (response['data']) as List;
+          this.leadersList = list.map((data) => DashboardMemberData.fromJson(data)).toList();
+        }
+        this.lineLeadersCountByManager = response["lineLeadersCount"];
+        this.lineLeadersTotalSubmissionByManager = response["lineLeadersTotalSubmission"];
+        this.loading = false;
+        notifyListeners();
+        return leadersList;
+      } catch (err) {
+        print(err);
+        this.loading = false;
+        return leadersList;
       }
-      this.loading = false;
-      return leadersList;
-    } catch (err) {
-      print(err);
-      this.loading = false;
+    }
+    else {
       return leadersList;
     }
+
   }
 
-  Future<List<DashboardMemberData>> getCoordinatorsList(String id) async {
-    var dataMapper = toMapGetMembers(id);
-    var body = utf8.encode(jsonEncode(dataMapper));
-    Map<String, String> requestHeaders = {
-      'Content-type': 'application/json',
-      'Accept': '*/*',
-    };
+  Future<List<DashboardMemberData>> getCoordinatorsList() async {
+    var loggedUser = await localStorage.getUserData();
+    if(loggedUser != null) {
+      var dataMapper = toMapGetMembers(loggedUser.id);
+      var body = utf8.encode(jsonEncode(dataMapper));
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': '*/*',
+      };
 
-    try {
-      print(body);
-      this.loading = true;
-      final response =
-      await _apiManager.post(url + 'leader', body, requestHeaders);
-      notifyListeners();
-      if (response["data"] != null) {
-        var list = (response['data']) as List;
-        this.coordinatorList = list.map((data) => DashboardMemberData.fromJson(data)).toList();
+      try {
+        print(body);
+        this.loading = true;
+        final response =
+        await _apiManager.post(url + 'leader', body, requestHeaders);
+        if (response["data"] != null) {
+          var list = (response['data']) as List;
+          this.coordinatorList = list.map((data) => DashboardMemberData.fromJson(data)).toList();
+        }
+        this.coordinatorCountByLeader = response["coordinatorCount"];
+        this.coordinatorsTotalSubmissionByLeader = response["coordinatorsSubmissionCount"];
+        this.loading = false;
+        notifyListeners();
+        return coordinatorList;
+      } catch (err) {
+        print(err);
+        this.loading = false;
+        return coordinatorList;
       }
-      this.loading = false;
-      return coordinatorList;
-    } catch (err) {
-      print(err);
-      this.loading = false;
+    }
+    else {
       return coordinatorList;
     }
+
+  }
+
+  Future<List<DashboardMemberData>> getCoordinatorsListByManager(String id) async {
+    var loggedUser = await localStorage.getUserData();
+    if(loggedUser != null) {
+      var dataMapper = toMapGetMembers(id);
+      var body = utf8.encode(jsonEncode(dataMapper));
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': '*/*',
+      };
+
+      try {
+        print(body);
+        this.loading = true;
+        final response =
+        await _apiManager.post(url + 'leader', body, requestHeaders);
+        if (response["data"] != null) {
+          var list = (response['data']) as List;
+          this.coordinatorList = list.map((data) => DashboardMemberData.fromJson(data)).toList();
+        }
+        this.coordinatorCountByLeader = response["coordinatorCount"];
+        this.coordinatorsTotalSubmissionByLeader = response["coordinatorsSubmissionCount"];
+        this.loading = false;
+        notifyListeners();
+        return coordinatorList;
+      } catch (err) {
+        print(err);
+        this.loading = false;
+        return coordinatorList;
+      }
+    }
+    else {
+      return coordinatorList;
+    }
+
   }
 
   Future<List<UserData>> getLeadersByManger() async {

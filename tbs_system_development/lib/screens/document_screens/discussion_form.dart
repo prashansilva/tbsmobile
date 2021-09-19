@@ -208,7 +208,7 @@ class _DiscussionFormScreenState extends State<DiscussionFormScreen> {
         if (value.status) {
           final snackBar = SnackBar(content: Text(value.message));
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          documentState.getDiscussionDocumentList();
+          documentState.getMyPersonal();
           Navigator.of(context).pop();
         }
         else {

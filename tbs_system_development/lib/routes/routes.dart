@@ -11,6 +11,7 @@ import 'package:tbssystemdevelopment/screens/home_screen.dart';
 import 'package:tbssystemdevelopment/screens/leader_list_screen.dart';
 import 'package:tbssystemdevelopment/screens/management_screens/coordinator_list_screen.dart';
 import 'package:tbssystemdevelopment/screens/management_screens/user_list_screen.dart';
+import 'package:tbssystemdevelopment/screens/my_personal_screen.dart';
 import 'package:tbssystemdevelopment/screens/user_screens/leader_add_screen.dart';
 import 'package:tbssystemdevelopment/screens/user_screens/user_register_screen.dart';
 import '../screens/document_view_screen.dart';
@@ -51,6 +52,8 @@ class RoutesGenerator {
         return MaterialPageRoute(builder: (_) => SecurityVerificationScreen());
       case '/resetpassword':
         return MaterialPageRoute(builder: (_) => ResetPasswordScreen());
+      case '/myPersonal':
+        return MaterialPageRoute(builder: (_) => MyPersonalListScreen());
     }
     return null;
   }

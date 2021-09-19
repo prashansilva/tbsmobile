@@ -10,6 +10,7 @@ class DashboardMemberData {
   final String role_code;
   final int totalCount;
   final int todayCount;
+  final int coordinatorsCount;
 
   DashboardMemberData({
     required this.id,
@@ -23,6 +24,7 @@ class DashboardMemberData {
     required this.role_code,
     required this.totalCount,
     required this.todayCount,
+    required this.coordinatorsCount,
   });
 
   factory DashboardMemberData.fromJson(Map<String, dynamic> json) => DashboardMemberData(
@@ -37,6 +39,7 @@ class DashboardMemberData {
     role_code: json['details']["role_code"],
     totalCount: json["totalCount"],
     todayCount: json["todayCount"],
+    coordinatorsCount: json["coordinatorsCount"]?? 0,
   );
 
   Map<String, dynamic> toJson() => {

@@ -16,6 +16,7 @@ class DocumentState extends ChangeNotifier {
   late DocumentData document;
   late bool loading;
   int count = 0;
+  int myPersonalCount = 0;
   late String coordinatorId;
   List<DocumentData> documentList = [];
   List<DiscussionFormData> discussionDocumentList = [];
@@ -131,6 +132,8 @@ class DocumentState extends ChangeNotifier {
     }
   }
 
+
+
   Future<ResponseData> createDiscussionForm(
       String discusser, String prospector, String mobileNumber) async {
     var loggedUser = await localStorage.getUserData();
@@ -224,6 +227,56 @@ class DocumentState extends ChangeNotifier {
       print(err);
       this.loading = false;
       return this.discussionDocumentList;
+    }
+  }
+
+  // new methods
+
+  Map toMapGetMyPersonal(String id, String role_code) {
+    var map = new Map<String, dynamic>();
+    map["id"] = id;
+    map["role_code"] = role_code;
+    map["count"] = this.count;
+    map["start_date"] = '${this.startDate.year}-${this.startDate.month}-${this.startDate.day}';
+    map["end_date"] = '${this.endDate.year}-${this.endDate.month}-${this.endDate.day}';
+    return map;
+  }
+
+
+  Future<List<DiscussionFormData>?> getMyPersonal() async {
+    var loggedUser = await localStorage.getUserData();
+    if(loggedUser != null) {
+      var dataMapper = toMapGetMyPersonal(loggedUser.id,loggedUser.role_code);
+      var body = utf8.encode(jsonEncode(dataMapper));
+      Map<String, String> requestHeaders = {
+        'Content-type': 'application/json',
+        'Accept': '*/*',
+      };
+
+      try {
+        this.loading = true;
+        final response =
+        await _apiManager.post(url + 'getMyPersonal', body, requestHeaders);
+        List<DiscussionFormData> newDocumentList = [];
+        if (response["data"] != null) {
+          var list = (response['data']["documents"]) as List;
+          newDocumentList =
+              list.map((data) => DiscussionFormData.fromJson(data)).toList();
+          discussionDocumentList.addAll(newDocumentList);
+        }
+        this.count = this.count + newDocumentList.length;
+        this.myPersonalCount = response["data"]["totalCount"];
+        this.loading = false;
+        notifyListeners();
+        return newDocumentList;
+      } catch (err) {
+        print(err);
+        this.loading = false;
+        return this.discussionDocumentList;
+      }
+    }
+    else {
+
     }
   }
 }

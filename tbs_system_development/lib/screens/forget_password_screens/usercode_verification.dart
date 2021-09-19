@@ -93,6 +93,21 @@ class UserCodeVerificationScreen extends StatelessWidget {
                   ),
                 ),
                 Padding(
+                  padding: const EdgeInsets.only(left: 20.0, right: 20.0),
+                  child: Container(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        child: Text(
+                          'Login',
+                          style: TextStyle(
+                              color: Color(appThemeColor)),
+                        )),
+                  ),
+                ),
+                Padding(
                   padding: const EdgeInsets.all(20.0),
                   child: Container(
                     child: Column(

@@ -41,7 +41,7 @@ class _UserLoginScreenState extends State<UserLoginScreen> {
                   width: width,
                   height: height * 0.5,
                   child: Image.asset(
-                    "assets/images/login_image.jpg",
+                    "assets/images/login.png",
                     fit: BoxFit.cover,
                   ),
                 ),

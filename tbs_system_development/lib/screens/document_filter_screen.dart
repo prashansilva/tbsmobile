@@ -8,7 +8,9 @@ import 'package:tbssystemdevelopment/models/form/discussion_form_model.dart';
 import 'package:tbssystemdevelopment/providers/dashboard_fliter_state.dart';
 import 'package:tbssystemdevelopment/utils/colors.dart';
 import 'package:tbssystemdevelopment/utils/constants.dart';
+import 'package:tbssystemdevelopment/widgets/custom_text_widget.dart';
 import 'package:tbssystemdevelopment/widgets/discussion_form_widget.dart';
+import 'package:tbssystemdevelopment/widgets/new_discussion_form.dart';
 
 class DocumentFilterScreen extends StatelessWidget {
   DateTime startDate = DateTime.now();
@@ -23,113 +25,288 @@ class DocumentFilterScreen extends StatelessWidget {
     final dashboardFilterState = Provider.of<DashboardFilterState>(context);
     final ScrollController _scrollController = new ScrollController();
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Forms'),
-          bottom: PreferredSize(
-              child: Container(
-                width: width,
-                color: primaryAppColor,
-                height: height * 0.05,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Center(
-                      child: Text('Count ${dashboardFilterState.totalCount}'),
-                    ),
-                    Center(
-                        child: (dashboardFilterState.startDate.year == DateTime.parse('1990-01-01').year)
-                            ? Text('All of time')
-                            : Text(
-                                '${DateFormat.yMMMd().format(dashboardFilterState.startDate)} - ${DateFormat.yMMMd().format(dashboardFilterState.endDate)}')),
-                  ],
-                ),
-              ),
-              preferredSize: Size.fromHeight(height * 0.05)),
-          actions: [
-            IconButton(
-                onPressed: () => {showingModalBottomSheet(context, dashboardFilterState)},
-                icon: FaIcon(FontAwesomeIcons.filter),)
-          ],
-        ),
         body: SafeArea(
-            child: dashboardFilterState.loading
-                ? SizedBox(
+            child: Container(
+                child: Column(children: [
+          Container(
+            child: Column(
+              children: [
+                Container(
+                    height: height * 0.25,
+                    decoration: BoxDecoration(boxShadow: [
+                      BoxShadow(
+                        offset: Offset(0, 10),
+                        blurRadius: 50,
+                        color: Colors.white.withOpacity(0.23),
+                      )
+                    ]), //
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Positioned(
+                            child: Container(
+                          height: height * 0.15,
+                          width: width,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              IconButton(
+                                  onPressed: () => {Navigator.of(context).pop()},
+                                  icon: Icon(
+                                    Icons.arrow_back,
+                                    color: Colors.white,
+                                  )),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Discussion Forms',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16 * width * 0.003,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          decoration: BoxDecoration(
+                              color: primaryAppColor,
+                              borderRadius: BorderRadius.only(
+                                  bottomLeft: Radius.circular(20.0),
+                                  bottomRight: Radius.circular(20.0)),
+                              boxShadow: [
+                                BoxShadow(
+                                    offset: Offset(0, 4),
+                                    blurRadius: 5,
+                                    color: Colors.black.withOpacity(0.23))
+                              ]),
+                        )),
+                        Positioned(
+                            top: height * 0.07,
+                            child: Container(
+                              height: height * 0.175,
+                              width: width * 0.9,
+                              child: Row(
+                                children: [
+                                  Container(
+                                    height: height * 0.15,
+                                    width: width * 0.2,
+                                    child: Padding(
+                                      padding: EdgeInsets.all(width*0.04),
+                                      child: Center(child: Image.asset(
+                                        "assets/images/discussion.png",
+                                        fit: BoxFit.cover,
+                                      )),
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Container(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          SizedBox(height: height * 0.01),
+                                          Text(
+                                            'Submission Count',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 10 * width * 0.003,
+                                            ),
+                                          ),
+                                          Container(
+                                            width: width * 0.65,
+                                            child: Row(
+                                              children: [
+                                                Spacer(),
+                                                Container(
+                                                  width: width * 0.65,
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    children: [
+                                                      (dashboardFilterState.startDate.year ==
+                                                          DateTime.parse('1990-01-01').year) ? Row(
+                                                            children: [
+                                                              Text('All of time'),
+                                                              Spacer(),
+                                                              GestureDetector(
+                                                                onTap: () {showingModalBottomSheet(
+                                                                    context,
+                                                                    dashboardFilterState);},
+                                                                child: Container(
+                                                                  height: height*0.07,
+                                                                  width: width*0.07,
+                                                                  child: Center(child: Image.asset(
+                                                                    "assets/images/history.png",
+                                                                    fit: BoxFit.cover,
+                                                                  )),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ) :
+                                                      Row(
+                                                        children: [
+                                                          Text(
+                                                            'From ',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 10 *
+                                                                    width *
+                                                                    0.003),
+                                                          ),
+                                                          Text(
+                                                              '${DateFormat.yMMMd().format(dashboardFilterState.startDate)}'),
+                                                          Text(
+                                                            ' To ',
+                                                            style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 10 *
+                                                                    width *
+                                                                    0.003),
+                                                          ),
+                                                          Text(
+                                                              '${DateFormat.yMMMd().format(dashboardFilterState.endDate)}'),
+                                                          GestureDetector(
+                                                            onTap: () {showingModalBottomSheet(
+                                                                context,
+                                                                dashboardFilterState);},
+                                                            child: Container(
+                                                              height: height*0.07,
+                                                              width: width*0.07,
+                                                              child: Center(child: Image.asset(
+                                                                "assets/images/history.png",
+                                                                fit: BoxFit.cover,
+                                                              )),
+                                                            ),
+                                                          ),
+
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(20.0)),
+                                  boxShadow: [
+                                    BoxShadow(
+                                        offset: Offset(0, 4),
+                                        blurRadius: 5,
+                                        color: Colors.black.withOpacity(0.23))
+                                  ]),
+                            )),
+                      ],
+                    )),
+              ],
+            ),
+          ),
+                  dashboardFilterState.loading
+                      ? SizedBox(
                     height: height * 0.5,
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
                   )
-                : dashboardFilterState.documentList.length > 0
-                    ? SmartRefresher(
-                        enablePullDown: false,
-                        enablePullUp: true,
-                        controller: _refreshController,
-                        onLoading: () async {
-                          await dashboardFilterState
-                              .getDiscussionDocumentList()
-                              .then((value) => {
-                                    if (value != null && value.length > 0)
-                                      {_refreshController.loadComplete()}
-                                    else
-                                      {_refreshController.loadNoData()}
-                                  });
-                        },
-                        child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount:
-                            dashboardFilterState.documentList.length,
-                            itemBuilder: (context, index) {
-                              DiscussionFormData document =
-                              dashboardFilterState.documentList[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: DiscussionFormWidget(
-                                  document: document,
+                      : dashboardFilterState.documentList.length > 0
+                      ? Expanded(
+                    child: SmartRefresher(
+                      enablePullDown: false,
+                      enablePullUp: true,
+                      controller: _refreshController,
+                      onLoading: () async {
+                        await dashboardFilterState
+                            .getDiscussionDocumentList()
+                            .then((value) => {
+                          if (value != null && value.length > 0)
+                            {_refreshController.loadComplete()}
+                          else
+                            {_refreshController.loadNoData()}
+                        });
+                      },
+                      child: ListView.builder(
+                          controller: _scrollController,
+                          itemCount:
+                          dashboardFilterState.documentList.length,
+                          itemBuilder: (context, index) {
+                            DiscussionFormData document =
+                            dashboardFilterState.documentList[index];
+                            return Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: NewDiscussionFormWidget(
+                                document: document,
+                                height: height*0.2,
+                                width: width*0.8,
+                              ),
+                            );
+                          }),
+                      footer: CustomFooter(
+                          builder: (BuildContext context, LoadStatus? mode) {
+                            Widget body;
+                            if (mode == LoadStatus.idle) {
+                              body = Text("");
+                            } else if (mode == LoadStatus.loading) {
+                              body = CircularProgressIndicator();
+                            } else if (mode == LoadStatus.failed) {
+                              body = Text(
+                                "Load Failed!Click retry!",
+                                style: TextStyle(
+                                  fontSize: 17,
                                 ),
                               );
-                            }),
-                        footer: CustomFooter(
-                            builder: (BuildContext context, LoadStatus? mode) {
-                          Widget body;
-                          if (mode == LoadStatus.idle) {
-                            body = Text("");
-                          } else if (mode == LoadStatus.loading) {
-                            body = CircularProgressIndicator();
-                          } else if (mode == LoadStatus.failed) {
-                            body = Text(
-                              "Load Failed!Click retry!",
-                              style: TextStyle(
-                                fontSize: 17,
-                              ),
+                            } else if (mode == LoadStatus.canLoading) {
+                              body = Text(
+                                "Release to load more",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              );
+                            } else {
+                              body = Text(
+                                "No More Data",
+                                style: TextStyle(
+                                  fontSize: 15,
+                                ),
+                              );
+                            }
+                            return Container(
+                              height: 55.0,
+                              child: Center(child: body),
                             );
-                          } else if (mode == LoadStatus.canLoading) {
-                            body = Text(
-                              "Release to load more",
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            );
-                          } else {
-                            body = Text(
-                              "No More Data",
-                              style: TextStyle(
-                                fontSize: 15,
-                              ),
-                            );
-                          }
-                          return Container(
-                            height: 55.0,
-                            child: Center(child: body),
-                          );
-                        }),
-                      )
-                    : Container(
-                        child: Center(
-                            child: Text(
+                          }),
+                    ),
+                  )
+                      : Container(
+                    height: height*0.4,
+                    child: Center(
+                        child: Text(
                           "No Documents!",
                           style: TextStyle(fontSize: 18),
                         )),
-                      )));
+                  )
+        ]))));
   }
 
   showingModalBottomSheet(context, DashboardFilterState dashboardFilterState) {

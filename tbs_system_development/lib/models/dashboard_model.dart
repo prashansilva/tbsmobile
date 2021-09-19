@@ -5,6 +5,9 @@ class DashboardData {
   final int todayCount;
   final int leadersCount;
   final int coordinatorsCount;
+  final int leadersSubCount;
+  final int coordinatorsSubCount;
+  final int myPersonal;
   final List<DashboardDocument> documents;
 
   DashboardData({
@@ -12,14 +15,20 @@ class DashboardData {
     required this.todayCount,
     required this.leadersCount,
     required this.coordinatorsCount,
+    required this.leadersSubCount,
+    required this.coordinatorsSubCount,
     required this.documents,
+    required this.myPersonal,
   });
 
   factory DashboardData.fromJson(Map<String, dynamic> json) => DashboardData(
     totalCount: json["totalCount"],
     todayCount: json["todayCount"],
+    myPersonal: json["myPersonalCount"],
     leadersCount: json["leadersCount"],
     coordinatorsCount: json["coordinatorsCount"],
+    leadersSubCount: json["leadersSubmissionCount"],
+    coordinatorsSubCount: json["coordinatorsSubmissionCount"],
     documents: parseDocuments(json),
   );
 

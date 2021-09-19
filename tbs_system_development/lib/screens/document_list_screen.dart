@@ -86,6 +86,7 @@ class DocumentListViewScreen extends StatelessWidget {
                         }),
                       )
                     : Container(
+              height: height*0.4,
                         child: Center(
                             child: Text(
                           "No Documents!",

@@ -9,7 +9,9 @@ import 'package:tbssystemdevelopment/providers/dashboard_state.dart';
 import 'package:tbssystemdevelopment/providers/document_state.dart';
 import 'package:tbssystemdevelopment/utils/colors.dart';
 import 'package:tbssystemdevelopment/utils/constants.dart';
+import 'package:tbssystemdevelopment/widgets/custom_text_widget.dart';
 import 'package:tbssystemdevelopment/widgets/discussion_form_widget.dart';
+import 'package:tbssystemdevelopment/widgets/new_discussion_form.dart';
 
 class DiscussionFormList extends StatelessWidget {
   DateTime startDate = DateTime.now();
@@ -24,62 +26,240 @@ class DiscussionFormList extends StatelessWidget {
     final documentState = Provider.of<DocumentState>(context);
     final ScrollController _scrollController = new ScrollController();
     return Scaffold(
-        appBar: AppBar(
-          title: Text('Discussion Forms'),
-          bottom: PreferredSize(
-              child: Container(
-                width: width,
-                color: primaryAppColor,
-                height: height * 0.05,
-                child: Center(
-                    child: (documentState.startDate == DateTime.now() && documentState.endDate == DateTime.now())
-                        ? Text('Today')
-                        : Text(
-                            '${DateFormat.yMMMd().format(documentState.startDate)} - ${DateFormat.yMMMd().format(documentState.endDate)}')),
-              ),
-              preferredSize: Size.fromHeight(height * 0.05)),
-          actions: renderIconButton(
-              context, documentState.isCoordinator, documentState),
-        ),
         body: SafeArea(
-            child: documentState.loading
-                ? SizedBox(
-                    height: height * 0.5,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  )
-                : documentState.discussionDocumentList.length > 0
-                    ? SmartRefresher(
-                        enablePullDown: false,
-                        enablePullUp: true,
-                        controller: _refreshController,
-                        onLoading: () async {
-                          await documentState
-                              .getDiscussionDocumentList()
-                              .then((value) => {
-                                    if (value != null && value.length > 0)
-                                      {_refreshController.loadComplete()}
-                                    else
-                                      {_refreshController.loadNoData()}
-                                  });
-                        },
-                        child: ListView.builder(
-                            controller: _scrollController,
-                            itemCount:
-                                documentState.discussionDocumentList.length,
-                            itemBuilder: (context, index) {
-                              DiscussionFormData document =
-                                  documentState.discussionDocumentList[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: DiscussionFormWidget(
-                                  document: document,
+            child: Column(
+              children: [
+                Container(
+                  height: height * 0.25,
+                  decoration: BoxDecoration(boxShadow: [
+                    BoxShadow(
+                      offset: Offset(0, 10),
+                      blurRadius: 50,
+                      color: Colors.white.withOpacity(0.23),
+                    )
+                  ]),
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Positioned(
+                          child: Container(
+                            height: height * 0.15,
+                            width: width,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                IconButton(
+                                    onPressed: () => {Navigator.of(context).pop()},
+                                    icon: Icon(
+                                      Icons.arrow_back,
+                                      color: Colors.white,
+                                    )),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Discussion Forms',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16 * width * 0.003,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
-                              );
-                            }),
-                        footer: CustomFooter(
-                            builder: (BuildContext context, LoadStatus? mode) {
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                color: primaryAppColor,
+                                borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(20.0),
+                                    bottomRight: Radius.circular(20.0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: Offset(0, 4),
+                                      blurRadius: 5,
+                                      color: Colors.black.withOpacity(0.23))
+                                ]),
+                          )),
+                      Positioned(
+                          top: height * 0.07,
+                          child: Container(
+                            height: height * 0.175,
+                            width: width * 0.9,
+                            child: Row(
+                              children: [
+                                Container(
+                                  height: height * 0.15,
+                                  width: width * 0.2,
+                                  child: Padding(
+                                    padding: EdgeInsets.all(width*0.04),
+                                    child: Center(child: Image.asset(
+                                      "assets/images/discussion.png",
+                                      fit: BoxFit.cover,
+                                    )),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Container(
+                                    child: Column(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: height * 0.01),
+                                        Text(
+                                          'Submission Count',
+                                          style: TextStyle(
+                                            color: Colors.black,
+                                            fontSize: 10 * width * 0.003,
+                                          ),
+                                        ),
+                                        Container(
+                                          width: width * 0.65,
+                                          child: Row(
+                                            children: [
+                                              Spacer(),
+                                              Container(
+                                                width: width * 0.65,
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment
+                                                      .start,
+                                                  children: [
+                                                    (documentState.startDate.year ==
+                                                        DateTime.parse('1990-01-01').year) ? Row(
+                                                      children: [
+                                                        Text('All of time'),
+                                                        Spacer(),
+                                                        GestureDetector(
+                                                          onTap: () {showingModalBottomSheet(
+                                                              context,
+                                                              documentState);},
+                                                          child: Container(
+                                                            height: height*0.07,
+                                                            width: width*0.07,
+                                                            child: Center(child: Image.asset(
+                                                              "assets/images/history.png",
+                                                              fit: BoxFit.cover,
+                                                            )),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ) :
+                                                    Row(
+                                                      children: [
+                                                        Text(
+                                                          'From ',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold,
+                                                              fontSize: 10 *
+                                                                  width *
+                                                                  0.003),
+                                                        ),
+                                                        Text(
+                                                            '${DateFormat.yMMMd().format(documentState.startDate)}'),
+                                                        Text(
+                                                          ' To ',
+                                                          style: TextStyle(
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .bold,
+                                                              fontSize: 10 *
+                                                                  width *
+                                                                  0.003),
+                                                        ),
+                                                        Text(
+                                                            '${DateFormat.yMMMd().format(documentState.endDate)}'),
+                                                        GestureDetector(
+                                                          onTap: () {showingModalBottomSheet(
+                                                              context,
+                                                              documentState);},
+                                                          child: Container(
+                                                            height: height*0.07,
+                                                            width: width*0.07,
+                                                            child: Center(child: Image.asset(
+                                                              "assets/images/history.png",
+                                                              fit: BoxFit.cover,
+                                                            )),
+                                                          ),
+                                                        ),
+
+                                                      ],
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                BorderRadius.all(Radius.circular(20.0)),
+                                boxShadow: [
+                                  BoxShadow(
+                                      offset: Offset(0, 4),
+                                      blurRadius: 5,
+                                      color: Colors.black.withOpacity(0.23))
+                                ]),
+                          )),
+                    ],
+                  ),//
+                ),
+                documentState.loading
+                    ? SizedBox(
+                  height: height * 0.5,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                )
+                    : documentState.discussionDocumentList.length > 0
+                    ? Expanded(
+                      child: SmartRefresher(
+                  enablePullDown: false,
+                  enablePullUp: true,
+                  controller: _refreshController,
+                  onLoading: () async {
+                      await documentState
+                          .getDiscussionDocumentList()
+                          .then((value) => {
+                        if (value != null && value.length > 0)
+                          {_refreshController.loadComplete()}
+                        else
+                          {_refreshController.loadNoData()}
+                      });
+                  },
+                  child: ListView.builder(
+                        controller: _scrollController,
+                        itemCount:
+                        documentState.discussionDocumentList.length,
+                        itemBuilder: (context, index) {
+                          DiscussionFormData document =
+                          documentState.discussionDocumentList[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: NewDiscussionFormWidget(
+                              document: document,
+                              height: height*0.2,
+                              width: width*0.8,
+                            ),
+                          );
+                        }),
+                  footer: CustomFooter(
+                        builder: (BuildContext context, LoadStatus? mode) {
                           Widget body;
                           if (mode == LoadStatus.idle) {
                             body = Text("");
@@ -112,14 +292,17 @@ class DiscussionFormList extends StatelessWidget {
                             child: Center(child: body),
                           );
                         }),
-                      )
+                ),
+                    )
                     : Container(
-                        child: Center(
-                            child: Text(
-                          "No Documents!",
-                          style: TextStyle(fontSize: 18),
-                        )),
-                      )));
+                  child: Center(
+                      child: Text(
+                        "No Documents!",
+                        style: TextStyle(fontSize: 18),
+                      )),
+                )
+              ],
+            )));
   }
 
   List<Widget> renderIconButton(
@@ -279,3 +462,5 @@ class DiscussionFormList extends StatelessWidget {
         });
   }
 }
+
+
